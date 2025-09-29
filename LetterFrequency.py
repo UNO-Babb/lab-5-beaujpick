@@ -3,50 +3,38 @@
 #Date:
 #Assignment:
 
-#This program will create a CSV file of frequencies based on a text file.
-#Use Excel or similar spreadsheet software to visualize the frequencies of the CSV file.
+import csv
+import string
 
-import os
+def letter_frequency(message):
+    # Initialize frequency list for 26 letters A-Z
+    frequencies = [0] * 26
 
-def countLetters(message):
-    alpha = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    # Normalize message to uppercase
     message = message.upper()
 
-    freq = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+    for letter in message:
+        if letter in string.ascii_uppercase:
+            pos = ord(letter) - ord('A')
+            frequencies[pos] += 1
 
-    #loop through each letter
-    #Find the position in the alphabet
-    #Increase the frequency at that position. If position was 5, then frequencies[5] = frequencies[5] + 1
+    return frequencies
 
+def save_to_csv(frequencies, filename="letter_frequencies.csv"):
+    # Write frequencies to a CSV with columns: Letter, Frequency
+    with open(filename, mode='w', newline='') as file:
+        writer = csv.writer(file)
+        writer.writerow(["Letter", "Frequency"])
 
-
-    #Create the output text in the format A,5\n if there were 5 letter A in the message.
-    #Remember that the \n is the symbol for a new line.
-
-    output = ""
-    for i in range(26):
-        print (alpha[i], ":", freq[i])
-        line = alpha[i] + "," + str(freq[i]) + "\n"
-        output = output + line
-
-    writeToFile(output)
-
-
-def writeToFile(fileText):
-    dir_path = os.path.dirname(os.path.realpath(__file__))
-    os.chdir(dir_path)
-
-    freqFile = open("frq.csv", 'w')
-    freqFile.write(fileText)
-
-    freqFile.close()
-
+        for i in range(26):
+            letter = chr(ord('A') + i)
+            writer.writerow([letter, frequencies[i]])
 
 def main():
-    msg = input("Enter a message: ")
-    countLetters(msg)
+    message = input("Enter a message to analyze letter frequency:\n")
+    frequencies = letter_frequency(message)
+    save_to_csv(frequencies)
+    print(f"Letter frequency saved to 'letter_frequencies.csv'. Open this file in Excel to create your chart.")
 
-
-
-if __name__ == '__main__':
-  main()
+if __name__ == "__main__":
+    main()

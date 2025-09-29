@@ -4,32 +4,31 @@
 #letters.
 #To run the code, run the main() function
 
-def encode(message, key):
-    alpha = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-    message = message.upper()
-    secret = ""
+def caesar_cipher(message, key):
+    result = ""
 
     for letter in message:
-        if (alpha.find(letter) >= 0): #check to see if the letter is actually a letter
-            spot = (alpha.find(letter) + key) % 26
-            secret = secret + alpha[spot]
-        else: # letter must have been a number, symbol, or punctuation.
-            secret = secret + letter
+        if letter.isalpha():
+            # Determine ASCII offset for uppercase or lowercase letters
+            offset = ord('A') if letter.isupper() else ord('a')
+            # Find the alphabetical index (0-25)
+            pos = ord(letter) - offset
+            # Shift position by key with wrap-around
+            new_pos = (pos + key) % 26
+            # Convert back to a character
+            new_letter = chr(new_pos + offset)
+            result += new_letter
+        else:
+            # Non-alphabetic characters remain unchanged
+            result += letter
 
-    return secret
-
-#def decode(message, key):
-    #We will want to decode the message here.
+    return result
 
 def main():
-    message = input("Enter a message: ")
-    key = int(input("Enter a key: "))
+    message = input("Enter the message to encrypt: ")
+    key = int(input("Enter the shift key (e.g., 3): "))
+    encrypted = caesar_cipher(message, key)
+    print("Encrypted message:", encrypted)
 
-    secret = encode(message, key)
-    print ("Encrypted:", secret)
-    #plaintext = decode(secret, key)
-    #print ("Decrypted:", plaintext)
-
-
-if __name__ == '__main__':
-  main()
+if __name__ == "__main__":
+    main()
